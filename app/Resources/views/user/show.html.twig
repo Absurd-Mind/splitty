@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% if sum == 0 %}
+	Du und {{ otherUser.username|e }} sind quitt.
+{% elseif sum > 0 %}
+	{{ otherUser.username|e }} schuldet dir {{ sum }}.
+{% else %}
+	Du schuldest {{ otherUser.username|e }} {{ sum }}.
+{% endif %}
+
+<ul>
+	{% for proceeding in proceedings %}
+		<li>{{ proceeding.user1|e }} --{{ proceeding.amount|e }}--> {{ proceeding.user2|e }}</li> 
+{% endfor %}
+</ul>
+
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

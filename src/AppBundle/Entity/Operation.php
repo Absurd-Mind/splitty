@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Operation
@@ -39,16 +39,13 @@ class Operation {
     private $amount;
     
     /**
-     *
-     * @ManyToOne(targetEntity="User")
+     * @ORM\OneToMany(targetEntity="Proceeding", mappedBy="operation")
      */
-    private $user1;
-    
-    /**
-     *
-     * @ManyToOne(targetEntity="User")
-     */
-    private $user2;
+    private $proceedings;
+
+    public function __construct() {
+        $this->proceedings = new ArrayCollection();
+    }
     
     /**
      * Get id
@@ -70,9 +67,9 @@ class Operation {
     
     /**
      * Set amount
-     * 
+     *
      * @param int $amount
-     *             
+     *
      * @return \AppBundle\Entity\Operation
      */
     public function setAmount($amount) {
@@ -125,48 +122,8 @@ class Operation {
         return $this->datetime;
     }
     
-    /**
-     * Set user1
-     *
-     * @param guid $user1            
-     *
-     * @return Operation
-     */
-    public function setUser1($user1) {
-        $this->user1 = $user1;
-        
-        return $this;
-    }
-    
-    /**
-     * Get user1
-     *
-     * @return guid
-     */
-    public function getUser1() {
-        return $this->user1;
-    }
-    
-    /**
-     * Set user2
-     *
-     * @param \User $user2            
-     *
-     * @return Operation
-     */
-    public function setUser2($user2) {
-        $this->user2 = $user2;
-        
-        return $this;
-    }
-    
-    /**
-     * Get user2
-     *
-     * @return \User
-     */
-    public function getUser2() {
-        return $this->user2;
+    public function getProceedings() {
+        return $this->proceedings;
     }
 }
 

@@ -5,7 +5,13 @@
 hello {{ app.user.username }}
 <ul>
 {% for operation in operations %}
-	<li>{{ operation.description|e }}
+	<li>{{ operation.description|e }} - {{ operation.amount|e }}
+	{% if operation.proceedings|length > 0 %}
+	{% for proceeding in operation.proceedings %}
+		{{ proceeding.user1|e }} --{{ proceeding.amount|e }}--> {{ proceeding.user2|e }} 
+	{% endfor %}
+	{% endif %}
+	</li>
 {% endfor %}
 </ul>
 
