@@ -2,7 +2,12 @@
 
 {% block body %}
 
-hello
+hello {{ app.user.username }}
+<ul>
+{% for operation in operations %}
+	<li>{{ operation.description|e }}
+{% endfor %}
+</ul>
 
 {% endblock %}
 
