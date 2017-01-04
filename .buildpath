@@ -21,6 +21,7 @@
 	<buildpathentry kind="src" path="vendor/psr/cache/src"/>
 	<buildpathentry kind="src" path="vendor/psr/log/Psr/Log"/>
 	<buildpathentry kind="src" path="vendor/symfony/polyfill-intl-icu"/>
+	<buildpathentry kind="src" path="vendor/moneyphp/money/src"/>
 	<buildpathentry kind="src" path="vendor/symfony/symfony/src/Symfony/Bridge/ProxyManager"/>
 	<buildpathentry kind="src" path="vendor/twig/twig/lib"/>
 	<buildpathentry kind="src" path="vendor/composer"/>

@@ -61,6 +61,12 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
+        mappings:
+            Money:
+                type: yml
+                dir: "%kernel.root_dir%/../app/Resources/Money/doctrine"
+                prefix: Money
+
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"
