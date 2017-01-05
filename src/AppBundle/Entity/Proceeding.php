@@ -5,6 +5,8 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping as ORM;
+use Money\Money;
+use Doctrine\ORM\Mapping\Embedded;
 
 /**
  * Proceeding
@@ -39,7 +41,7 @@ class Proceeding {
     
     /**
      *
-     * @var int @ORM\Column(name="amount", type="integer")
+     * @var Money @Embedded(class = "Money\Money")
      */
     private $amount;
     
@@ -128,7 +130,7 @@ class Proceeding {
     /**
      * Set amount
      *
-     * @param integer $amount            
+     * @param Money $amount            
      *
      * @return Proceeding
      */
@@ -141,7 +143,7 @@ class Proceeding {
     /**
      * Get amount
      *
-     * @return int
+     * @return Money
      */
     public function getAmount() {
         return $this->amount;

@@ -2,9 +2,11 @@
 
 namespace AppBundle\Controller;
 
+use Money\Money;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class UserController extends Controller {
     /**
@@ -29,32 +31,38 @@ class UserController extends Controller {
     }
 
     /**
-     * @Route("/user/show/", name="showuserdebt")
+     * @Route("/user/show/{userId}", name="showuserdebt")
      */
-    public function showAction(Request $request) {
-        $userId = 2;
+    public function showAction(Request $request, int $userId) {
         $userRepository = $this->getDoctrine()->getRepository('AppBundle:User');
         $otherUser = $userRepository->findOneById($userId);
 
         $em = $this->getDoctrine()->getManager();
-        $query = $em->createQuery('SELECT p
-                FROM AppBundle:Proceeding p
-                WHERE (p.user1 = :userId OR p.user2 = :userId) AND(p.user1 = :myId OR p.user2 = :myId)
-                ORDER BY p.date ASC')->setParameter('myId', $this->getUser()->getId())->setParameter('userId', $userId);
-        $proceedings = $query->getResult();
-        $sum = 0;
-        foreach ( $proceedings as $proceeding ) {
-            if ($proceeding->getUser1()->getId() == $this->getUser()->getId()) {
-                $sum += $proceeding->getAmount();
-            } else {
-                $sum -= $proceeding->getAmount();
+        $query = $em->createQuery('SELECT o
+                FROM AppBundle:Operation o
+                JOIN o.splits s
+                WITH s.user = :myId
+                ORDER BY o.datetime ASC')->setParameter('myId', $this->getUser()->getId());
+        $operations = $query->getResult();
+        $sum = Money::EUR(0);
+        foreach ($operations as $operation) {
+            foreach ( $operation->getProceedings() as $proceeding ) {
+                if ($sum == null) {
+                    $sum = new Money(0, $proceeding->getAmount()->getCurrency());
+                }
+                if ($proceeding->getUser1()->getId() == $this->getUser()->getId()) {
+                    $sum = $sum->add($proceeding->getAmount());
+                } else {
+                    $sum = $sum->subtract($proceeding->getAmount());
+                }
             }
         }
+        
         return $this->render('user/show.html.twig', [
                 'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
-                'proceedings' => $proceedings,
                 'sum' => $sum,
-                'otherUser' => $otherUser
+                'otherUser' => $otherUser,
+                'operations' => $operations
         ]);
     }
 }

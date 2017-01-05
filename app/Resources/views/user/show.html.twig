@@ -1,20 +1,46 @@
 {% extends 'base.html.twig' %}
+{% block right %}
+	<p><a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}">neue Ausgabe</a></p>
+
+    {% if sum.isZero() %}
+    	Du und {{ otherUser.username|e }} sind<br>quitt.
+    {% elseif sum.isPositive() %}
+    	{{ otherUser.username|e }} schuldet dir<br>{{ sum|money }}.
+    {% else %}
+    	Du schuldest {{ otherUser.username|e }} <br>{{ sum|money }}.
+    {% endif %}
+{% endblock %}
 
 {% block body %}
-
-{% if sum == 0 %}
-	Du und {{ otherUser.username|e }} sind quitt.
-{% elseif sum > 0 %}
-	{{ otherUser.username|e }} schuldet dir {{ sum }}.
-{% else %}
-	Du schuldest {{ otherUser.username|e }} {{ sum }}.
-{% endif %}
-
-<ul>
-	{% for proceeding in proceedings %}
-		<li>{{ proceeding.user1|e }} --{{ proceeding.amount|e }}--> {{ proceeding.user2|e }}</li> 
-{% endfor %}
-</ul>
+	{% for operation in operations %}
+	<div class="operation">
+		<div class="summary">
+    		<div class="date" title="{{ operation.datetime|date('Y-m-d\\TH:i:sP') }}">
+    		    {{ operation.datetime|date('M') }}
+    			<div class="datenumber">{{ operation.datetime|date('d') }}</div>
+    		</div>
+    		<div class="description">{{ operation.description|e }}</div>
+    		<div class="cost">{{ operation.amount|money }}</div>
+    		<div class="you">{{ operation.amount|money }}</div>
+		</div>
+		<div class="details">
+    		{% for split in operation.splits %}
+    		<div>
+    			<div class="user">{{ split.user }}</div>
+    			<div class="paid">{% if not split.paid.isZero() %}hat {{ split.paid|money }} bezahlt.{% endif %}</div>
+    			<div class="debt">schuldet {{ split.debt|money }}.</div>
+    		</div>
+    		{% endfor %}
+    	</div>
+	</div>
+	{% endfor %}
+	<script>
+$(document).ready(function(){
+    $(".summary").click(function() {
+         $(this).next().toggle('fast');
+    });
+});
+	</script>
 
 {% endblock %}
 

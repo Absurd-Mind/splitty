@@ -2,8 +2,10 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Embedded;
+use Money\Money;
 
 /**
  * Operation
@@ -34,7 +36,7 @@ class Operation {
     
     /**
      *
-     * @var int @ORM\Column(name="amount", type="integer")
+     * @Embedded(class = "Money\Money")
      */
     private $amount;
     
@@ -42,9 +44,18 @@ class Operation {
      * @ORM\OneToMany(targetEntity="Proceeding", mappedBy="operation")
      */
     private $proceedings;
+    
+    private $users;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Split", mappedBy="operation")
+     */
+    private $splits;
 
     public function __construct() {
         $this->proceedings = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->splits = new ArrayCollection();
     }
     
     /**
@@ -59,7 +70,7 @@ class Operation {
     /**
      * Get amount
      *
-     * @return number
+     * @return Money
      */
     public function getAmount() {
         return $this->amount;
@@ -68,7 +79,7 @@ class Operation {
     /**
      * Set amount
      *
-     * @param int $amount
+     * @param Money $amount
      *
      * @return \AppBundle\Entity\Operation
      */
@@ -124,6 +135,21 @@ class Operation {
     
     public function getProceedings() {
         return $this->proceedings;
+    }
+    
+    public function getUsers() {
+        return $this->users;
+    }
+    
+    public function getSplits() {
+        return $this->splits;
+    }
+    
+    public function setSplits($splits) {
+        
+        $this->splits = $splits;
+        
+        return $this;
     }
 }
 
