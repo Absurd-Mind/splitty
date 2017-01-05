@@ -50,6 +50,10 @@ class UserController extends Controller {
                 if ($sum == null) {
                     $sum = new Money(0, $proceeding->getAmount()->getCurrency());
                 }
+                if ($proceeding->getUser1()->getId() != $userId && $proceeding->getUser2()->getId() != $userId) {
+                    continue;
+                }
+
                 if ($proceeding->getUser1()->getId() == $this->getUser()->getId()) {
                     $sum = $sum->add($proceeding->getAmount());
                 } else {
