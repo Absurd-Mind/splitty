@@ -124,7 +124,13 @@
 .user {
 	float: left;
 	height: 40px;
+	width: 100px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	padding: 0 10px 0 0;
+	font-weight: bold;
+	line-height: 40px;
+	text-align: center;
 }
 
 .paid {

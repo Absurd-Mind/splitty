@@ -26,7 +26,7 @@
 		<div class="details">
     		{% for split in operation.splits %}
     		<div>
-    			<div class="user">{{ split.user }}</div>
+    			<div class="user" title="{{ split.user }}">{{ split.user }}</div>
     			<div class="paid">{% if not split.paid.isZero() %}hat {{ split.paid|money }} bezahlt.{% endif %}</div>
     			<div class="debt">schuldet {{ split.debt|money }}.</div>
     		</div>
