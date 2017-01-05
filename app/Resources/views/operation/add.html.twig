@@ -13,6 +13,14 @@ add a new Operation
 {{ form_widget(form) }}
 {{ form_end(form) }}
 
+<script>
+    $(document).ready(function() {
+        $('.js-datepicker').datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+</script>
+
 {% endblock %}
 
 {% block stylesheets %}

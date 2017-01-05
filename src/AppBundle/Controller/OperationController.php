@@ -31,7 +31,13 @@ class OperationController extends Controller {
 
         $builder = $this->createFormBuilder($operation)
         ->add('description', TextType::class)
-        ->add('datetime', DateType::class)
+        ->add('datetime', DateType::class, array(
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => array(
+                        'class' => 'js-datepicker',
+                )
+        ))
         ->add('amount', TextType::class)
         ->add('users', EntityType::class, array (
                 // query choices from this entity
