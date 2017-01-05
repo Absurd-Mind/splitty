@@ -121,6 +121,10 @@
 	display: none;
 }
 
+#add_friend_dialog {
+	display: none;
+}
+
 .user {
 	float: left;
 	height: 40px;

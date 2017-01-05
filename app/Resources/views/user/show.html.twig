@@ -1,4 +1,59 @@
 {% extends 'base.html.twig' %}
+
+{% block left %}
+	<p>Freunde <button id="add_friend">hinzufügen</button></p>
+	{% for friend in user.friends %}
+		<div><a href="{{ path('showuserdebt', {'userId' : friend.id}) }}">{{ friend.username|e }}</a> <button class="remove_friend" value="{{ friend.id }}">remove</button></div>
+	{% endfor %}
+	
+	<div id="add_friend_dialog"><p>xxx</p></div>
+		
+	<script>
+    $(document).ready(function() {
+        var dialog;
+
+        function addFriend() {
+        	$.ajax({
+      		   url: '{{ path('put_friend', { '_format' : 'json'}) }}',
+     		   type: 'PUT',
+     		   dataType: 'json',
+     		   data: {
+         		   	email:'angua@example.com'
+         		   },
+     		   success: function(response) {
+     		   }
+     		});
+        }
+        
+        dialog = $("#add_friend_dialog").dialog({
+				autoOpen: false,
+				modal:true,
+				buttons: {
+					"Add friend" : addFriend,
+			        Cancel: function() {
+			          dialog.dialog( "close" );
+			        }
+				}
+            });
+		$("#add_friend").button().on("click", function() {
+				dialog.dialog("open");
+			});
+		$(".remove_friend").button().on("click", function() {
+	    	$.ajax({
+	   		   url: '{{ path('delete_friend', { '_format' : 'json'}) }}',
+	  		   type: 'DELETE',
+	  		   dataType: 'json',
+	  		   data: {
+	      		   	email:'angua@example.com'
+	      		},
+	  		   success: function(response) {
+	  		   }
+	  		});
+		});
+	});
+	</script>
+{% endblock %}
+
 {% block right %}
 	<p><a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}">neue Ausgabe</a></p>
 

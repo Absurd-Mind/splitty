@@ -6,7 +6,6 @@ use Money\Money;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Collections\ArrayCollection;
 
 class UserController extends Controller {
     /**
@@ -65,6 +64,7 @@ class UserController extends Controller {
         return $this->render('user/show.html.twig', [
                 'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
                 'sum' => $sum,
+                'user' => $this->getUser(),
                 'otherUser' => $otherUser,
                 'operations' => $operations
         ]);

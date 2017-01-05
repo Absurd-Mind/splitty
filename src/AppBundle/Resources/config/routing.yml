@@ -1,0 +1,4 @@
+service_friends:
+    type: rest
+    prefix: /v1
+    resource: AppBundle\Controller\FriendsRestController
