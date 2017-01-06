@@ -6,6 +6,8 @@ use Money\Money;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 class UserController extends Controller {
     /**
@@ -28,6 +30,32 @@ class UserController extends Controller {
                 'operations' => $operations 
         ]);
     }
+    private function sumProceedings(Collection $proceedings, int $myId, int $containedUserId) {
+        $sum = Money::EUR(0);
+        foreach ( $proceedings as $proceeding ) {
+            $user1Id = $proceeding->getUser1()->getId();
+            $user2Id = $proceeding->getUser2()->getId();
+
+            if ($user1Id != $containedUserId && $user2Id != $containedUserId) {
+                continue;
+            }
+
+            if ($user1Id == $user2Id) {
+                continue;
+            }
+
+            if ($sum == null) {
+                $sum = new Money(0, $proceeding->getAmount()->getCurrency());
+            }
+
+            if ($user1Id == $myId) {
+                $sum = $sum->add($proceeding->getAmount());
+            } else {
+                $sum = $sum->subtract($proceeding->getAmount());
+            }
+        }
+        return $sum;
+    }
 
     /**
      * @Route("/user/show/{userId}", name="showuserdebt")
@@ -47,45 +75,8 @@ class UserController extends Controller {
         $summarySums = array();
         $myId = $this->getUser()->getId();
         foreach ($operations as $operation) {
-            foreach ( $operation->getProceedings() as $proceeding ) {
-                if ($proceeding->getUser1()->getId() != $userId && $proceeding->getUser2()->getId() != $userId) {
-                    continue;
-                }
-                
-                if ($sum == null) {
-                    $sum = new Money(0, $proceeding->getAmount()->getCurrency());
-                }
-                
-                if ($proceeding->getUser1()->getId() == $myId) {
-                    $sum = $sum->add($proceeding->getAmount());
-                } else {
-                    $sum = $sum->subtract($proceeding->getAmount());
-                }
-                                
-            }
-            
-            $x = Money::EUR(0);
-            foreach ( $operation->getProceedings() as $proceeding ) {
-                if ($proceeding->getUser1()->getId() != $myId && $proceeding->getUser2()->getId() != $myId) {
-                    continue;
-                }
-                
-                if ($proceeding->getUser1()->getId() == $myId && $proceeding->getUser2()->getId() == $myId) {
-                    continue;
-                }
-                
-                if ($x == null) {
-                    $x = new Money(0, $proceeding->getAmount()->getCurrency());
-                }
-                
-                if ($proceeding->getUser1()->getId() == $myId) {
-                    $x = $x->add($proceeding->getAmount());
-                } else {
-                    $x = $x->subtract($proceeding->getAmount());
-                }
-            }
-            
-            $summarySums[$operation->getId()] = $x;
+            $sum = $sum->add($this->sumProceedings($operation->getProceedings(), $myId, $userId));
+            $summarySums[$operation->getId()] = $this->sumProceedings($operation->getProceedings(), $myId, $myId);
         }
         
         return $this->render('user/show.html.twig', [
