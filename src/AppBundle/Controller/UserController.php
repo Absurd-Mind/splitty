@@ -2,12 +2,11 @@
 
 namespace AppBundle\Controller;
 
+use Doctrine\Common\Collections\Collection;
 use Money\Money;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
 class UserController extends Controller {
     /**
@@ -27,9 +26,11 @@ class UserController extends Controller {
         // replace this example code with whatever you need
         return $this->render('user/index.html.twig', [ 
                 'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
-                'operations' => $operations 
+                'operations' => $operations,
+                'user' => $this->getUser()
         ]);
     }
+
     private function sumProceedings(Collection $proceedings, int $myId, int $containedUserId) {
         $sum = Money::EUR(0);
         foreach ( $proceedings as $proceeding ) {

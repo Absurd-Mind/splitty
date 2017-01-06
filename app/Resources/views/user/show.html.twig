@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block right %}
-	<p><a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}">neue Ausgabe</a></p>
+	<p><a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}" class="button">neue Ausgabe</a></p>
 
     {% if sum.isZero() %}
     	Du und {{ otherUser.username|e }} sind<br>quitt.

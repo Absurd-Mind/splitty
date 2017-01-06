@@ -42,6 +42,7 @@ class OperationController extends Controller {
         ->add('users', EntityType::class, array (
                 // query choices from this entity
                 'class' => 'AppBundle:User',
+                'choices' => $this->getUser()->getFriends(),
                 
                 // use the User.username property as the visible option string
                 'choice_label' => 'username',
@@ -119,7 +120,8 @@ class OperationController extends Controller {
         
         return $this->render('operation/add.html.twig', array (
                 'form' => $form->createView(),
-                'users' => $allUsers 
+                'users' => $allUsers,
+                'user' => $this->getUser()
         ));
     }
 }
