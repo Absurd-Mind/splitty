@@ -1,0 +1,70 @@
+<p>
+	Freunde
+	<button id="add_friend">hinzufügen</button>
+</p>
+{% for friend in user.friends %}
+	{% include 'friend.html.twig' with { friend : friend } %}
+{% endfor %}
+<p id="friends_body">
+    <div id="add_friend_dialog">
+    	<input id="friend_email" type="text"></input>
+    </div>
+</p>
+
+<script>
+    $(document).ready(function() {
+        var dialog;
+        var friendEmail = $('#friend_email');
+
+        function addFriend() {
+        	$.ajax({
+      		   url: '{{ path('put_friend', { '_format' : 'json'}) }}',
+     		   type: 'PUT',
+     		   dataType: 'json',
+     		   data: {
+         		   	email:friendEmail.val()
+         		   },
+     		   success: function(response) {
+         		   $('#friends_body').append('<div>'+
+         		   '<a href="{{ path('showuserdebt', {'userId' : 0}) }}">' +
+         		   response.username +
+         		   '</a>' +
+         		   '<button class="remove_friend" value="' +
+         		   response.email +
+         		   '">remove</button>' +
+         		   '</div>');
+         		   
+     				dialog.dialog( "close" );
+     		   }
+     		});
+        }
+        
+        dialog = $("#add_friend_dialog").dialog({
+				autoOpen: false,
+				modal:true,
+				buttons: {
+					"Add friend" : addFriend,
+			        Cancel: function() {
+			          dialog.dialog( "close" );
+			        }
+				}
+            });
+		$("#add_friend").button().on("click", function() {
+				dialog.dialog("open");
+			});
+		$(".remove_friend").button().on("click", function() {
+	    	$.ajax({
+		    	context: this,
+	   		   url: '{{ path('delete_friend', { '_format' : 'json'}) }}',
+	  		   type: 'DELETE',
+	  		   dataType: 'json',
+	  		   data: {
+	      		   	email: this.value
+	      		},
+	  		   success: function(response) {
+		  		   $(this).parent().remove();
+	  		   }
+	  		});
+		});
+	});
+</script>

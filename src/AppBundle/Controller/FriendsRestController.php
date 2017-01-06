@@ -26,14 +26,19 @@ class FriendsRestController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $userRepository = $em->getRepository('AppBundle:User');
         $otherUser = $userRepository->findOneByEmail($email);
-        if ($otherUser == null || $this->getUser()->getFriends()->contains($otherUser)) {
+        if ($otherUser == null || $this->getUser()->getFriends()->contains($otherUser) || $this->getUser()->getId() == $otherUser->getId()) {
             $view = $this->getErrorsView(array('no user with email address found'));
             return $this->handleView($view);
         }
         $this->getUser()->getFriends()->add($otherUser);
         $em->flush();
         
-        $view->setStatusCode(200);
+        $userData = array('username' => $otherUser->getUsername(),
+                'email' => $otherUser->getEmail(),
+                'id' => $otherUser->getId(),
+        );
+
+        $view->setData($userData)->setStatusCode(200);
         return $this->handleView($view);
     }
     
@@ -53,14 +58,14 @@ class FriendsRestController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $userRepository = $em->getRepository('AppBundle:User');
         $otherUser = $userRepository->findOneByEmail($email);
-        if ($otherUser == null || !$this->getUser()->getFriends()->contains($otherUser)) {
+        if ($otherUser == null || !$this->getUser()->getFriends()->contains($otherUser) || $this->getUser()->getId() == $otherUser->getId()) {
             $view = $this->getErrorsView(array('no user with email address found'));
             return $this->handleView($view);
         }
         $this->getUser()->getFriends()->removeElement($otherUser);
         $em->flush();
         
-        $view->setStatusCode(200);
+        $view->setData(array())->setStatusCode(200);
         return $this->handleView($view);
     }
 }
