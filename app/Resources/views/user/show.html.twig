@@ -75,8 +75,8 @@
     			<div class="datenumber">{{ operation.datetime|date('d') }}</div>
     		</div>
     		<div class="description">{{ operation.description|e }}</div>
+			<div class="you">{{ attribute(summarySums, operation.id)|money }}</div>
     		<div class="cost">{{ operation.amount|money }}</div>
-    		<div class="you">{{ operation.amount|money }}</div>
 		</div>
 		<div class="details">
     		{% for split in operation.splits %}

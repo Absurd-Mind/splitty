@@ -41,29 +41,57 @@ class UserController extends Controller {
                 FROM AppBundle:Operation o
                 JOIN o.splits s
                 WITH s.user = :myId
-                ORDER BY o.datetime ASC')->setParameter('myId', $this->getUser()->getId());
+                ORDER BY o.datetime DESC')->setParameter('myId', $this->getUser()->getId());
         $operations = $query->getResult();
         $sum = Money::EUR(0);
+        $summarySums = array();
+        $myId = $this->getUser()->getId();
         foreach ($operations as $operation) {
             foreach ( $operation->getProceedings() as $proceeding ) {
-                if ($sum == null) {
-                    $sum = new Money(0, $proceeding->getAmount()->getCurrency());
-                }
                 if ($proceeding->getUser1()->getId() != $userId && $proceeding->getUser2()->getId() != $userId) {
                     continue;
                 }
-
-                if ($proceeding->getUser1()->getId() == $this->getUser()->getId()) {
+                
+                if ($sum == null) {
+                    $sum = new Money(0, $proceeding->getAmount()->getCurrency());
+                }
+                
+                if ($proceeding->getUser1()->getId() == $myId) {
                     $sum = $sum->add($proceeding->getAmount());
                 } else {
                     $sum = $sum->subtract($proceeding->getAmount());
                 }
+                                
             }
+            
+            $x = Money::EUR(0);
+            foreach ( $operation->getProceedings() as $proceeding ) {
+                if ($proceeding->getUser1()->getId() != $myId && $proceeding->getUser2()->getId() != $myId) {
+                    continue;
+                }
+                
+                if ($proceeding->getUser1()->getId() == $myId && $proceeding->getUser2()->getId() == $myId) {
+                    continue;
+                }
+                
+                if ($x == null) {
+                    $x = new Money(0, $proceeding->getAmount()->getCurrency());
+                }
+                
+                if ($proceeding->getUser1()->getId() == $myId) {
+                    $x = $x->add($proceeding->getAmount());
+                } else {
+                    $x = $x->subtract($proceeding->getAmount());
+                }
+            }
+            
+            $summarySums[$operation->getId()] = $x;
         }
         
         return $this->render('user/show.html.twig', [
                 'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
                 'sum' => $sum,
+                'summarySums' => $summarySums,
                 'user' => $this->getUser(),
                 'otherUser' => $otherUser,
                 'operations' => $operations
