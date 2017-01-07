@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Operation;
+use AppBundle\Entity\Proceeding;
 use AppBundle\Entity\Split;
 use Money\Currency;
 use Money\Money;
@@ -14,15 +15,103 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\Proceeding;
 
 class OperationController extends Controller {
+    
+    /**
+     * @Route("/payment/add/{userId}", name="addPayment")
+     */
+    public function addPaymentAction(Request $request, int $userId) {
+        $em = $this->getDoctrine()->getManager();
+        $userRepository = $em->getRepository('AppBundle:User');
+        $other = $userRepository->findOneById($userId);
+        $me = $userRepository->findOneById($this->getUser()->getId());
+        $data = array('date' => new \DateTime('now'), 'currency' => 'EUR', 'amount' => '0.00');
+        $friends = $me->getFriends();
+        $friends->add($me);
+        
+        $builder = $this->createFormBuilder($data)
+        ->add('date', DateType::class, array(
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => array(
+                        'class' => 'js-datepicker',
+                )
+        ))
+        ->add('currency', TextType::class)
+        ->add('amount', TextType::class, array('attr' => array('id' => 'moneyinput')))
+        ->add('sender', EntityType::class, array (
+                'class' => 'AppBundle:User',
+                'choices' => $this->getUser()->getFriends(),
+                'expanded' => false,
+                'choice_label' => 'username',
+                'multiple' => false,
+                'attr' => array (
+                        'width' => '400',
+                        'class' => 'js-example-basic-multiple'
+                ),
+                'data' => $me,
+                'em' => $em
+        ))
+        ->add('receiver', EntityType::class, array (
+                'class' => 'AppBundle:User',
+                'choices' => $this->getUser()->getFriends(),
+                'choice_label' => 'username',
+                'multiple' => false,
+                'attr' => array (
+                        'width' => '400',
+                        'class' => 'js-example-basic-multiple'
+                ),
+                'data' => $other,
+                'em' => $em
+        ))
+        ->add('add', SubmitType::class, array (
+                'label' => 'Create Operation'
+        ));
+        
+        $form = $builder->getForm();
+        
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            
+            $operation = new Operation();
+            $amount = new Money($data['amount'], new Currency('EUR'));
+            $operation->setAmount($amount);
+            $operation->setDatetime($data['date']);
+            $operation->setDescription('');
+            
+            $proceeding = new Proceeding();
+            $proceeding->setOperation($operation);
+            $proceeding->setDate($operation->getDatetime());
+            $proceeding->setUser1($data['sender']);
+            $proceeding->setUser2($data['receiver']);
+            $proceeding->setAmount($amount);
+            
+            $operation->getProceedings()->add($proceeding);
+            $em->persist($proceeding);
+            
+            $em->persist($operation);
+            if ($me->getFriends()->contains($me)) {
+                $me->getFriends()->removeElement($me);
+            }
+            
+            $em->flush();
+            
+            return $this->redirectToRoute('showuserdebt', array('userId' => $userId));
+        }
+        
+        return $this->render('payment/add.html.twig', array (
+                'form' => $form->createView(),
+                'user' => $this->getUser()
+        ));
+    }
+    
     /**
      * @Route("/operation/add/{userId}", name="addOperation")
      */
     public function addOperationAction(Request $request, int $userId) {
-        $userRepository = $this->getDoctrine()->getRepository('AppBundle:User');
-        $allUsers = $userRepository->findAll();
         $operation = new Operation();
         $operation->setDescription('dummy description');
         $operation->setAmount(Money::EUR(100));
@@ -38,7 +127,7 @@ class OperationController extends Controller {
                         'class' => 'js-datepicker',
                 )
         ))
-        ->add('amount', TextType::class)
+        ->add('amount', TextType::class, array('attr' => array('id' => 'moneyinput')))
         ->add('users', EntityType::class, array (
                 // query choices from this entity
                 'class' => 'AppBundle:User',
@@ -120,7 +209,6 @@ class OperationController extends Controller {
         
         return $this->render('operation/add.html.twig', array (
                 'form' => $form->createView(),
-                'users' => $allUsers,
                 'user' => $this->getUser()
         ));
     }

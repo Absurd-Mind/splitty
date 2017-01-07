@@ -151,5 +151,9 @@ class Operation {
         
         return $this;
     }
+    
+    public function isPayement() {
+        return $this->splits->isEmpty();
+    }
 }
 

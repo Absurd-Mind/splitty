@@ -2,6 +2,7 @@
 
 {% block right %}
 	<p><a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}" class="button">neue Ausgabe</a></p>
+	<p><a href="{{ path('addPayment', { 'userId' : otherUser.id }) }}" class="button">Schulden begleichen</a></p>
 
     {% if sum.isZero() %}
     	Du und {{ otherUser.username|e }} sind<br>quitt.
@@ -22,7 +23,7 @@
     		</div>
     		<div class="description">{{ operation.description|e }}</div>
 			<div class="you">{{ attribute(summarySums, operation.id)|money }}</div>
-    		<div class="cost">{{ operation.amount|money }}</div>
+    		<div class="cost">{% if not operation.isPayement() %}{{ operation.amount|money }}{% endif %}</div>
 		</div>
 		<div class="details">
     		{% for split in operation.splits %}
