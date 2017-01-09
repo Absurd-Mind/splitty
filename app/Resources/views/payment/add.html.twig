@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h2>add a new Operation</h2>
+<h2>add a new Payment</h2>
 {{ form_start(form) }}
 {{ form_widget(form) }}
 {{ form_end(form) }}
@@ -9,6 +9,7 @@
 <script>
     $(document).ready(function() {
     	$(".js-example-basic-multiple").select2();
+    	$(".currencyinput").select2();
         $('.js-datepicker').datepicker({
             dateFormat: 'yy-mm-dd'
         });

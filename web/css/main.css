@@ -16,6 +16,14 @@
 /* 	background: #0cc; */
 }
 
+select {
+	width: 200px;
+}
+
+input {
+	width: 200px;
+}
+
 @media all and (min-width: 960px) {
 	#leftside {
 		text-align: left;
