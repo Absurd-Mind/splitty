@@ -1,0 +1,1 @@
+<span class="money {% if money.isPositive() %}positive{% elseif money.isNegative() %}negative{% else %}zero{% endif %}">{{ money.absolute()|money }}</span>

@@ -7,9 +7,9 @@
     {% if sum.isZero() %}
     	Du und {{ otherUser.username|e }} sind<br>quitt.
     {% elseif sum.isPositive() %}
-    	{{ otherUser.username|e }} schuldet dir<br>{{ sum|money }}.
+    	{{ otherUser.username|e }} schuldet dir<br>{% include 'money.html.twig' with { money : sum } %}.
     {% else %}
-    	Du schuldest {{ otherUser.username|e }} <br>{{ sum|money }}.
+    	Du schuldest {{ otherUser.username|e }} <br>{% include 'money.html.twig' with { money : sum } %}.
     {% endif %}
 {% endblock %}
 
@@ -22,7 +22,7 @@
     			<div class="datenumber">{{ operation.datetime|date('d') }}</div>
     		</div>
     		<div class="description">{{ operation.description|e }}{% if operation.isPayment() %}-Bezahlung-{% endif %}</div>
-			<div class="you">{{ attribute(summarySums, operation.id)|money }}</div>
+			<div class="you">{% include 'money.html.twig' with { money : attribute(summarySums, operation.id) } %}</div>
     		<div class="cost">{% if not operation.isPayment() %}{{ operation.amount|money }}{% endif %}</div>
 		</div>
 		<div class="details">

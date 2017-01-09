@@ -19,7 +19,6 @@ class AppExtension extends \Twig_Extension {
         
         $numberFormatter = new \NumberFormatter('de_DE', \NumberFormatter::CURRENCY);
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
-        
         return $moneyFormatter->format($money);
     }
     public function getName() {

@@ -24,6 +24,22 @@ input {
 	width: 200px;
 }
 
+.money.positive {
+	color: #5399db;
+}
+
+.money.negative {
+	color: #FF6961;
+}
+
+.money {
+	font-weight: bold;
+}
+
+.money.zero {
+	
+}
+
 @media all and (min-width: 960px) {
 	#leftside {
 		text-align: left;
