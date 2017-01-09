@@ -21,16 +21,16 @@
     		    {{ operation.datetime|date('M') }}
     			<div class="datenumber">{{ operation.datetime|date('d') }}</div>
     		</div>
-    		<div class="description">{{ operation.description|e }}</div>
+    		<div class="description">{{ operation.description|e }}{% if operation.isPayment() %}-Bezahlung-{% endif %}</div>
 			<div class="you">{{ attribute(summarySums, operation.id)|money }}</div>
-    		<div class="cost">{% if not operation.isPayement() %}{{ operation.amount|money }}{% endif %}</div>
+    		<div class="cost">{% if not operation.isPayment() %}{{ operation.amount|money }}{% endif %}</div>
 		</div>
 		<div class="details">
     		{% for split in operation.splits %}
     		<div>
     			<div class="user" title="{{ split.user }}">{{ split.user }}</div>
     			<div class="paid">{% if not split.paid.isZero() %}hat {{ split.paid|money }} bezahlt.{% endif %}</div>
-    			<div class="debt">schuldet {{ split.debt|money }}.</div>
+    			<div class="debt">{% if not split.debt.isZero() %}schuldet {{ split.debt|money }}.{% endif %}</div>
     		</div>
     		{% endfor %}
     	</div>

@@ -51,11 +51,17 @@ class Operation {
      * @ORM\OneToMany(targetEntity="Split", mappedBy="operation")
      */
     private $splits;
+    
+    /**
+     * @var boolean @ORM\Column(name="payment", type="boolean", options={"default":false})
+     */
+    private $payment;
 
     public function __construct() {
         $this->proceedings = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->splits = new ArrayCollection();
+        $this->payment = false;
     }
     
     /**
@@ -152,8 +158,21 @@ class Operation {
         return $this;
     }
     
-    public function isPayement() {
-        return $this->splits->isEmpty();
+    public function isPayment() {
+        return $this->payment;
+    }
+    
+    /**
+     * Set payment
+     *
+     * @param string $payment
+     *
+     * @return Operation
+     */
+    public function setPayment($payment) {
+        $this->payment = $payment;
+    
+        return $this;
     }
 }
 

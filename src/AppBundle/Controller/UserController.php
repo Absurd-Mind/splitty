@@ -68,9 +68,11 @@ class UserController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $query = $em->createQuery('SELECT o
                 FROM AppBundle:Operation o
-                JOIN o.proceedings s
-                WITH s.user1 = :myId OR s.user2 = :myId
-                ORDER BY o.datetime DESC')->setParameter('myId', $this->getUser()->getId());
+                JOIN o.splits s1
+                WITH s1.user = :myId
+                JOIN o.splits s2
+                WITH s2.user = :otherId
+                ORDER BY o.datetime DESC')->setParameter('myId', $this->getUser()->getId())->setParameter('otherId', $otherUser->getId());
         $operations = $query->getResult();
         $sum = Money::EUR(0);
         $summarySums = array();

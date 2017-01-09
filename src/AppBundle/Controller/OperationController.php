@@ -108,6 +108,7 @@ class OperationController extends Controller {
             $operation->setAmount($money);
             $operation->setDatetime($data['date']);
             $operation->setDescription('');
+            $operation->setPayment(true);
             
             $proceeding = new Proceeding();
             $proceeding->setOperation($operation);
@@ -116,9 +117,25 @@ class OperationController extends Controller {
             $proceeding->setUser2($data['receiver']);
             $proceeding->setAmount($money);
             
-            $operation->getProceedings()->add($proceeding);
-            $em->persist($proceeding);
+            $split1 = new Split();
+            $split1->setOperation($operation);
+            $split1->setUser($data['sender']);
+            $split1->setPaid($money);
+            $split1->setDebt(new Money(0, $money->getCurrency()));
+            $operation->getSplits()->add($split1);
             
+            $split2 = new Split();
+            $split2->setOperation($operation);
+            $split2->setUser($data['receiver']);
+            $split2->setPaid(new Money(0, $money->getCurrency()));
+            $split2->setDebt($money);
+            $operation->getSplits()->add($split2);
+            
+            $operation->getProceedings()->add($proceeding);
+            
+            $em->persist($split1);
+            $em->persist($split2);
+            $em->persist($proceeding);
             $em->persist($operation);
             if ($me->getFriends()->contains($me)) {
                 $me->getFriends()->removeElement($me);
