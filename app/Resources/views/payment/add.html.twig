@@ -3,7 +3,16 @@
 {% block body %}
 <h2>add a new Payment</h2>
 {{ form_start(form) }}
-{{ form_widget(form) }}
+	<div class="inner-wrap">
+		{{ form_row(form.currency) }}
+		{{ form_row(form.amount) }}
+		{{ form_row(form.date) }}
+		{{ form_row(form.sender) }}
+		{{ form_row(form.receiver) }}
+	</div>
+	<div class="button-section">
+		{{ form_row(form.add) }}
+    </div>
 {{ form_end(form) }}
 
 <script>

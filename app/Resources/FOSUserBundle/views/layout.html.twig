@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>{% block title %}Splitty Login{% endblock %}</title>
+{% block stylesheets %}
+{% endblock %}
+<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+<link href="{{ asset('css/main.css') }}" rel="stylesheet" />
+</head>
+<body>
+	<aside id="topbar">
+	</aside>
+	<div class="flex-container">
+		<div id="content" class="loginbox">
+            {% block body %}
+            	<h1>Login to Splitty<span>Tell your friends what they owe you!</span></h1>
+                {% block fos_user_content %}{% endblock %}
+            {% endblock %}
+		</div>
+	</div>
+</div>
+	{% block javascripts %}
+	{% endblock %}
+</body>
+</html>
