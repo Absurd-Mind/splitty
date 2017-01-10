@@ -3,7 +3,8 @@
 {% block right %}
 	<p><a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}" class="button">neue Ausgabe</a></p>
 	<p><a href="{{ path('addPayment', { 'userId' : otherUser.id }) }}" class="button">Schulden begleichen</a></p>
-
+{% for code, sum in sums %}
+<p>
     {% if sum.isZero() %}
     	Du und {{ otherUser.username|e }} sind<br>quitt.
     {% elseif sum.isPositive() %}
@@ -11,6 +12,8 @@
     {% else %}
     	Du schuldest {{ otherUser.username|e }} <br>{% include 'money.html.twig' with { money : sum } %}.
     {% endif %}
+</p>
+{% endfor %}
 {% endblock %}
 
 {% block body %}

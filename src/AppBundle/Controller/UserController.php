@@ -32,7 +32,7 @@ class UserController extends Controller {
     }
 
     private function sumProceedings(Collection $proceedings, int $myId, int $containedUserId) {
-        $sum = Money::EUR(0);
+        $sum = null;
         foreach ( $proceedings as $proceeding ) {
             $user1Id = $proceeding->getUser1()->getId();
             $user2Id = $proceeding->getUser2()->getId();
@@ -74,21 +74,36 @@ class UserController extends Controller {
                 WITH s2.user = :otherId
                 ORDER BY o.datetime DESC')->setParameter('myId', $this->getUser()->getId())->setParameter('otherId', $otherUser->getId());
         $operations = $query->getResult();
-        $sum = Money::EUR(0);
+        $sum = array();
         $summarySums = array();
         $myId = $this->getUser()->getId();
         foreach ($operations as $operation) {
-            $sum = $sum->add($this->sumProceedings($operation->getProceedings(), $myId, $userId));
+            $sum = $this->merge($sum, $this->sumProceedings($operation->getProceedings(), $myId, $userId));
             $summarySums[$operation->getId()] = $this->sumProceedings($operation->getProceedings(), $myId, $myId);
         }
         
         return $this->render('user/show.html.twig', [
                 'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
-                'sum' => $sum,
+                'sums' => $sum,
                 'summarySums' => $summarySums,
                 'user' => $this->getUser(),
                 'otherUser' => $otherUser,
                 'operations' => $operations
         ]);
+    }
+    
+    private function merge(array $sum, Money $n) {
+        if ($n == null) {
+            return;
+        }
+        
+        $code = $n->getCurrency()->getCode();
+        if (array_key_exists($code, $sum)) {
+            $sum[$code] = $sum[$code]->add($n); 
+        } else {
+            $sum[$code] = $n;
+        }
+        
+        return $sum;
     }
 }
