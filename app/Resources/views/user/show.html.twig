@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block right %}
-	<p><a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}" class="button">neue Ausgabe</a></p>
-	<p><a href="{{ path('addPayment', { 'userId' : otherUser.id }) }}" class="button">Schulden begleichen</a></p>
 {% for code, sum in sums %}
 <p>
     {% if sum.isZero() %}
@@ -17,16 +15,25 @@
 {% endblock %}
 
 {% block body %}
+<div>
+		<h2 style="width: 145px; display: inline-block;">{{ otherUser.username }}</h2>
+    	<div style="width: 400px; display: inline-block; text-align: right;">
+    		<a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}" class="button" style="width: unset; display: inline-block;">neue Ausgabe</a>
+    		<a href="{{ path('addPayment', { 'userId' : otherUser.id }) }}" class="button" style="width: unset; display: inline-block;">Schulden begleichen</a>
+    	</div>
+</div>
 	{% for operation in operations %}
 	<div class="operation">
 		<div class="summary">
-    		<div class="date" title="{{ operation.datetime|date('Y-m-d\\TH:i:sP') }}">
-    		    {{ operation.datetime|date('M') }}
-    			<div class="datenumber">{{ operation.datetime|date('d') }}</div>
-    		</div>
-    		<div class="description">{{ operation.description|e }}{% if operation.isPayment() %}-Bezahlung-{% endif %}</div>
-			<div class="you">{% include 'money.html.twig' with { money : attribute(summarySums, operation.id) } %}</div>
+			<div class="mainblock">
+    			<div class="date" title="{{ operation.datetime|date('Y-m-d\\TH:i:sP') }}">
+    			    {{ operation.datetime|date('M') }}
+    				<div class="datenumber">{{ operation.datetime|date('d') }}</div>
+    			</div>
+	    		<div class="description">{{ operation.description|e }}{% if operation.isPayment() %}-Bezahlung-{% endif %}</div>
+			</div>
     		<div class="cost">{% if not operation.isPayment() %}{{ operation.amount|money }}{% endif %}</div>
+			<div class="you">{% include 'money.html.twig' with { money : attribute(summarySums, operation.id) } %}</div>
 		</div>
 		<div class="details">
     		{% for split in operation.splits %}
