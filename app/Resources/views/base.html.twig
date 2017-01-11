@@ -25,6 +25,7 @@
 	</aside>
 	<div class="flex-container">
 		<aside id="leftside">
+			<a href="{{ path('dashboard') }}">{% trans %}Dashboard{% endtrans %}</a>
 			{% block left %}
 			{% endblock %}
 			{% include 'friends.html.twig' %}

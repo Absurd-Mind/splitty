@@ -1,23 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-hello
-{{ app.user.username }}
-<ul>
-	{% for operation in operations %}
-	<li>{{ operation.description|e }} - {{ operation.amount.getAmount()|e }} {% if operation.proceedings|length > 0 %}
-		<ul>
-			{% for proceeding in operation.proceedings %}
-			<li><a
-				href="{{ path('showuserdebt', {'userId' : proceeding.user1.id}) }}">{{ proceeding.user1|e }}</a>
-				--{{ proceeding.amount.getAmount()|e }}--> <a
-				href="{{ path('showuserdebt', {'userId' : proceeding.user2.id}) }}">{{ proceeding.user2|e }}</a></li>
-			{% endfor %}
-		</ul> {% endif %}</li>
-	{% endfor %}
-</ul>
-
+<h2>Dashboard</h2>
+<h3>{% trans %}Debt Overview{% endtrans %}</h3>
+{% for id,user in sums %}
+    {% for amount in user %}
+    	<p><a href="{{ path('showuserdebt', {'userId' : id}) }}">{{ attribute(users, id) }}</a></p>
+        {% include 'money.html.twig' with { money : amount } %}
+    {% endfor %}
+{% endfor %}
 {% endblock %}
 
 {% block stylesheets %}

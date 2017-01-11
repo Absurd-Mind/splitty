@@ -13,21 +13,61 @@ class UserController extends Controller {
      * @Route("/", name="dashboard")
      */
     public function indexAction(Request $request) {
-        $repository = $this->getDoctrine()->getRepository('AppBundle:Operation');
-        /*
-         * $query = $repository->createQueryBuilder('o')
-         * ->where('o.user1 = :userId OR o.user2 = :userId')
-         * ->setParameter('userId', $this->getUser()->getId())
-         * ->getQuery();
-         */
-        // $query->getResult();
-        $operations = $repository->findAll();
+        $em = $this->getDoctrine()->getManager();
+        $myId = $this->getUser()->getId();
+        $query = $em->createQuery('SELECT p
+                FROM AppBundle:Proceeding p
+                WHERE p.user1 = :myId OR p.user2 = :myId
+                ORDER BY p.date DESC')->setParameter('myId', $myId);
+        $proceedings = $query->getResult();
+        
+        $sums = array();
+        foreach ($proceedings as $proceeding) {
+            $user1Id = $proceeding->getUser1()->getId();
+            $user2Id = $proceeding->getUser2()->getId();
+            
+            if ($user1Id == $user2Id) {
+                continue;
+            }
+            
+            $amount = $proceeding->getAmount();
+            $code = $amount->getCurrency()->getCode();
+            $otherUserId = $user1Id;
+            $type = 'subtract';
+            
+            if ($user1Id == $myId) {
+                $otherUserId = $user2Id;
+                $type = 'add';
+            }
+            
+            if (!array_key_exists($otherUserId, $sums)) {
+                $sums[$otherUserId] = array();
+            }
+            
+            if (!array_key_exists($code, $sums[$otherUserId])) {
+                $sums[$otherUserId][$code] = new Money(0, $amount->getCurrency());
+            }
+            
+            if ($type == 'add') {
+                $sums[$otherUserId][$code] = $sums[$otherUserId][$code]->add($amount);
+            } else {
+                $sums[$otherUserId][$code] = $sums[$otherUserId][$code]->subtract($amount);
+            }
+        }
+        
+        $userRepository = $em->getRepository('AppBundle:User');
+        $users = array();
+        foreach($sums as $userId => $value) {
+            $users[$userId] = $userRepository->findOneById($userId);
+        }
         
         // replace this example code with whatever you need
         return $this->render('user/index.html.twig', [ 
                 'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
-                'operations' => $operations,
-                'user' => $this->getUser()
+                'operations' => array(),
+                'sums' => $sums,
+                'user' => $this->getUser(),
+                'users' => $users
         ]);
     }
 
