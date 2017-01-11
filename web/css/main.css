@@ -116,6 +116,7 @@ select {
     margin-top: -3px;
 }
 
+button[type="submit"],
 .button,
 input[type="button"],
 input[type="submit"]{
@@ -134,6 +135,7 @@ input[type="submit"]{
     font-size: 15px;
 }
 
+button[type="submit"]:hover,
 .button:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover{
@@ -282,6 +284,36 @@ input[type="submit"]:hover{
 
 #add_friend_dialog {
 	display: none;
+}
+
+#senderblock {
+	width: 150px;
+	display: inline-block;
+}
+
+#direction {
+	width: 50px;
+	display: inline-block;
+}
+
+#receiverblock {
+	width: 150px;
+	display: inline-block;
+}
+
+.moneyblock {
+	width: 150px;
+	display: inline-block;
+}
+
+.currencyblock {
+	width: 85px;
+	display: inline-block;
+}
+
+#dateblock {
+	width: 350px;
+	display: inline-block;
 }
 
 .user {

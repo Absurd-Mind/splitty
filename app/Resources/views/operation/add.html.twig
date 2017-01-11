@@ -1,8 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h2>add a new Operation</h2>
+<h2>{% trans %}add a new Operation{% endtrans %}</h2>
 {{ form_start(form) }}
+	<div class="inner-wrap" style="text-align: center">
+		<div>{{ form_row(form.users) }}</div>
+		<div>{{ form_row(form.description) }}</div>
+    	<div>
+    		<div class="currencyblock">{{ form_row(form.currency) }}</div>
+    		<div class="moneyblock">{{ form_row(form.amount) }}</div>
+    	</div>
+    	<div>
+        	<div id="senderblock">{{ form_row(form.sender) }}</div>
+    	</div>
+    	<div id="dateblock">
+			{{ form_row(form.datetime) }}
+		</div>
+	</div>
+	
+	<div class="button-section" style="display:inline-block;">
+		{{ form_row(form.add) }}
+    </div>
 {{ form_widget(form) }}
 {{ form_end(form) }}
 

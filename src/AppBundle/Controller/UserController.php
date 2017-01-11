@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller {
     /**
-     * @Route("/user/", name="info")
+     * @Route("/", name="dashboard")
      */
     public function indexAction(Request $request) {
         $repository = $this->getDoctrine()->getRepository('AppBundle:Operation');

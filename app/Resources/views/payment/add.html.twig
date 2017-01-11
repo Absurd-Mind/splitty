@@ -1,16 +1,23 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h2>add a new Payment</h2>
+<h2>{% trans %}add a new Payment{% endtrans %}</h2>
 {{ form_start(form) }}
-	<div class="inner-wrap">
-		{{ form_row(form.currency) }}
-		{{ form_row(form.amount) }}
-		{{ form_row(form.date) }}
-		{{ form_row(form.sender) }}
-		{{ form_row(form.receiver) }}
+	<div class="inner-wrap" style="text-align: center">
+		<div>
+    		<div id="senderblock">{{ form_row(form.sender) }}</div>
+    		<div id="direction">=></div>
+    		<div id="receiverblock">{{ form_row(form.receiver) }}</div>
+		</div>
+		<div>
+			<div class="currencyblock">{{ form_row(form.currency) }}</div>
+			<div class="moneyblock">{{ form_row(form.amount) }}</div>
+		</div>
+		<div id="dateblock">
+			{{ form_row(form.date) }}
+		</div>
 	</div>
-	<div class="button-section">
+	<div class="button-section" style="display:inline-block;">
 		{{ form_row(form.add) }}
     </div>
 {{ form_end(form) }}
