@@ -25,7 +25,9 @@
 	</aside>
 	<div class="flex-container">
 		<aside id="leftside">
-			<a href="{{ path('dashboard') }}">{% trans %}Dashboard{% endtrans %}</a>
+			
+			<a href="{{ path('dashboard') }}" class="friendblock{% if dashboard is defined%} selected{% endif %}">{% trans %}Dashboard{% endtrans %}</a>
+			
 			{% block left %}
 			{% endblock %}
 			{% include 'friends.html.twig' %}
@@ -35,6 +37,8 @@
 			{% endblock %}
 		</div>
 		<aside id="rightside">
+			<a href="{{ path('fos_user_security_logout') }}" class="friendblock">{% trans %}Logout{% endtrans %}</a>
+			
 			{% block right %}
 			{% endblock %}
 		</aside>

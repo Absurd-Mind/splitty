@@ -67,7 +67,8 @@ class UserController extends Controller {
                 'operations' => array(),
                 'sums' => $sums,
                 'user' => $this->getUser(),
-                'users' => $users
+                'users' => $users,
+                'dashboard' => true
         ]);
     }
 

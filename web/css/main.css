@@ -120,7 +120,7 @@ button[type="submit"],
 .button,
 input[type="button"],
 input[type="submit"]{
-    background: #2A88AD;
+    background: #5399db;
     padding: 8px 20px 8px 20px;
     border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -282,6 +282,28 @@ input[type="submit"]:hover{
 	box-shadow: 0px 5px 7px -5px rgba(0, 0, 0, 0.25) inset, 0px -3px 7px -5px rgba(0, 0, 0, 0.25) inset;
 }
 
+.plus, .minus {
+	font-weight: bolder;
+}
+
+.remove_friend span,
+.remove_friend {
+	display: inline-block;
+	color: #FF6961;
+}
+
+#add_friend span,
+#add_friend {
+	color: #CCCCCC;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+#add_friend:hover {
+	color: #5399db;
+	text-decoration: underline;
+}
+
 #add_friend_dialog {
 	display: none;
 }
@@ -334,6 +356,31 @@ input[type="submit"]:hover{
 
 .debt {
 	height: 20px;
+}
+
+.friendblock {
+	display: block;
+	text-decoration: none;
+	padding: 5px 10px 5px 10px;
+}
+
+.friendblock:hover {
+	text-decoration: underline;
+	background-color: #5399db;
+	color: #FFFFFF;
+}
+.friendblock.selected {
+	background-color: #5399db;
+	color: #FFFFFF;
+}
+
+.menuheadline {
+	color: #666666;
+	background-color: #EEEEEE;
+	font-size: 14px;
+	border-width: 1px 0 1px 0;
+	border-style: solid;
+	border-color: #CCCCCC;
 }
 
 

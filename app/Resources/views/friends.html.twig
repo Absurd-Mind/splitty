@@ -1,9 +1,13 @@
-<p>
-	Freunde
-	<button id="add_friend">hinzufügen</button>
+<p class="menuheadline">
+	{% trans %}Freunde{% endtrans %}
+	<a id="add_friend" href="#"><span class="plus">+</span>{% trans %}hinzufügen{% endtrans %}</a>
 </p>
 {% for friend in user.friends %}
-	{% include 'friend.html.twig' with { friend : friend } %}
+	<a href="{{ path('showuserdebt', {'userId' : friend.id}) }}" class="friendblock{% if otherUser is defined and otherUser.id == friend.id %} selected{% endif %}">{{ friend.username|e }}
+{# 		<span class="remove_friend" value="{{ friend.email }}" href="#">#}
+{# 			<span class="minus">-</span>remove#}
+{# 		</span>#}
+	</a>
 {% endfor %}
 <p id="friends_body">
     <div id="add_friend_dialog">
@@ -49,10 +53,11 @@
 			        }
 				}
             });
-		$("#add_friend").button().on("click", function() {
+		$("#add_friend").click(function() {
 				dialog.dialog("open");
+				return false;
 			});
-		$(".remove_friend").button().on("click", function() {
+		$(".remove_friend").on("click", function() {
 	    	$.ajax({
 		    	context: this,
 	   		   url: '{{ path('delete_friend', { '_format' : 'json'}) }}',
