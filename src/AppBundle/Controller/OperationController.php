@@ -283,7 +283,7 @@ class OperationController extends Controller {
             }
             $em->persist($operation);
             $em->flush();
-            return $this->redirectToRoute('info');
+            return $this->redirectToRoute('showuserdebt', array('userId' => $userId));
         }
         
         return $this->render('operation/add.html.twig', array (
