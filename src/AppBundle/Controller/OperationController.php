@@ -107,7 +107,7 @@ class OperationController extends Controller {
             $operation->setAmount($money);
             $operation->setDatetime($data['date']);
             $operation->setDescription('');
-            $operation->setType(\SplitType::Payment);
+            $operation->setType(SplitType::Payment);
             
             $proceeding = new Proceeding();
             $proceeding->setOperation($operation);
