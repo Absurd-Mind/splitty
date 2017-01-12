@@ -5,19 +5,18 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Operation;
 use AppBundle\Entity\Proceeding;
 use AppBundle\Entity\Split;
+use AppBundle\Entity\SplitType;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Money;
+use Money\Parser\IntlMoneyParser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
-use Money\Parser\IntlMoneyParser;
 
 class OperationController extends Controller {
     
@@ -108,7 +107,7 @@ class OperationController extends Controller {
             $operation->setAmount($money);
             $operation->setDatetime($data['date']);
             $operation->setDescription('');
-            $operation->setPayment(true);
+            $operation->setType(\SplitType::Payment);
             
             $proceeding = new Proceeding();
             $proceeding->setOperation($operation);
@@ -167,7 +166,8 @@ class OperationController extends Controller {
                 'datetime' => new \DateTime('now'),
                 'currency' => 'EUR',
                 'users' => array($other),
-                'sender' => $me
+                'sender' => $me,
+                'type' => SplitType::Even
         );
 
         
@@ -204,6 +204,24 @@ class OperationController extends Controller {
                 ])
         ->add('amount', TextType::class, array('attr' => array('id' => 'moneyinput')
                 
+        ))->add('type', ChoiceType::class, array (
+                'choices' => array(SplitType::Even, SplitType::YouOwe, SplitType::TheyOwe),
+                'expanded' => false,
+                'choice_label' => function ($value, $key, $index) {
+                    switch ($value) {
+                        case SplitType::YouOwe :
+                            return "you owe everything";
+                        case SplitType::TheyOwe :
+                            return "they owe everything";
+                        case SplitType::Even :
+                        default :
+                            return "spend even";
+                    }
+                },
+                'multiple' => false,
+                'attr' => array (
+                    'class' => 'js-example-basic-multiple' 
+                )
         ))->add('sender', ChoiceType::class, array (
                 'choices' => $friendsAndMe,
                 'expanded' => false,
@@ -236,18 +254,23 @@ class OperationController extends Controller {
             $data = $form->getData();
             $operationUsers = $data['users'];
             $operationUsers[] = $this->getUser();
+            $type = $data['type'];
             $i = 0;
             
             $numberFormatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
             $moneyParser = new IntlMoneyParser($numberFormatter, $isoCurrencies);
             
             $money = $moneyParser->parse($data['currency'].$data['amount']);
-            
-            $mm = $money->allocateTo(count($operationUsers));
+            $count = count($operationUsers);
+            if ($type == SplitType::TheyOwe) {
+                $count = $count - 1;
+            }
+            $mm = $money->allocateTo($count);
             $operation = new Operation();
             $operation->setDescription($data['description']);
             $operation->setDatetime($data['datetime']);
             $operation->setAmount($money);
+            $operation->setType($type);
             
             $payer = $data['sender'];
             foreach ( $operationUsers as $other ) {
@@ -256,11 +279,24 @@ class OperationController extends Controller {
                 $split->setUser($other);
                 if ($other->getId() == $payer->getId()) {
                     $split->setPaid($money);
+                    if ($type == SplitType::TheyOwe) {
+                        $split->setDebt(new Money(0, $money->getCurrency()));
+                    } else if ($type == SplitType::YouOwe) {
+                        $split->setDebt($money);
+                    }
                 } else {
                     $split->setPaid(new Money(0, $money->getCurrency()));
+                    if ($type == SplitType::TheyOwe) {
+                        $split->setDebt($mm[$i]);
+                        $i++;
+                    } else if ($type == SplitType::YouOwe) {
+                        $split->setDebt(new Money(0, $money->getCurrency()));
+                    }
                 }
-                $split->setDebt($mm[$i]);
-                $i++;
+                if ($type == SplitType::Even) {
+                    $split->setDebt($mm[$i]);
+                    $i++;
+                }
                 
                 $operation->getSplits()->add($split);
                 $em->persist($split);

@@ -3,8 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Embedded;
+use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
 
 /**
@@ -53,9 +53,10 @@ class Operation {
     private $splits;
     
     /**
-     * @var boolean @ORM\Column(name="payment", type="boolean", options={"default":false})
+     *
+     * @var int @ORM\Column(name="type", type="integer", options={"default":0})
      */
-    private $payment;
+    private $type;
 
     public function __construct() {
         $this->proceedings = new ArrayCollection();
@@ -159,18 +160,30 @@ class Operation {
     }
     
     public function isPayment() {
-        return $this->payment;
+        if ($this->type == SplitType::Payment) {
+            return true;
+        }
+        return false;
     }
     
     /**
-     * Set payment
+     * Get type
      *
-     * @param string $payment
+     * @return int
+     */
+    public function getType() {
+        return $this->type;
+    }
+    
+    /**
+     * Set type
+     *
+     * @param string $type
      *
      * @return Operation
      */
-    public function setPayment($payment) {
-        $this->payment = $payment;
+    public function setType($type) {
+        $this->type = $type;
     
         return $this;
     }
