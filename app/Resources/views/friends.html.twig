@@ -1,6 +1,6 @@
 <p class="menuheadline">
-	{% trans %}Freunde{% endtrans %}
-	<a id="add_friend" href="#"><span class="plus">+</span>{% trans %}hinzufügen{% endtrans %}</a>
+	{% trans %}Friends{% endtrans %}
+	<a id="add_friend" href="#"><span class="plus">+</span>{% trans %}add{% endtrans %}</a>
 </p>
 {% for friend in user.friends %}
 	<a href="{{ path('showuserdebt', {'userId' : friend.id}) }}" class="friendblock{% if otherUser is defined and otherUser.id == friend.id %} selected{% endif %}">{{ friend.username|e }}

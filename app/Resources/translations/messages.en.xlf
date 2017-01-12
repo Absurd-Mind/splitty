@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="7f633295a95fdba4a07dcbe70d0768a0" resname="hinzufügen">
+        <source>hinzufügen</source>
+        <target>add</target>
+      </trans-unit>
+      <trans-unit id="db6fb397f9f382376453c82c0b3dcf51" resname="add a new Operation">
+        <source>add a new Operation</source>
+        <target>add a new Operation</target>
+      </trans-unit>
+      <trans-unit id="2938c7f7e560ed972f8a4f68e80ff834" resname="Dashboard">
+        <source>Dashboard</source>
+        <target>Dashboard</target>
+      </trans-unit>
+      <trans-unit id="0323de4f66a1700e2173e9bcdce02715" resname="Logout">
+        <source>Logout</source>
+        <target>Log out</target>
+      </trans-unit>
+      <trans-unit id="66bae13da370226e0434eaef73cb284c" resname="add a new Payment">
+        <source>add a new Payment</source>
+        <target>add a new Payment</target>
+      </trans-unit>
+      <trans-unit id="02a718aaa8bde03430b6ebc0fb18363b" resname="Debt Overview">
+        <source>Debt Overview</source>
+        <target>Debt Overview</target>
+      </trans-unit>
+      <trans-unit id="a9b5cb32d1009cab1fe84f862199a295" resname="You and %username% are&lt;br&gt;even.">
+        <source>You and %username% are&lt;br&gt;even.</source>
+        <target><![CDATA[You and %username% are<br>even.]]></target>
+      </trans-unit>
+      <trans-unit id="3d594614f445f6b00014e9b77730b833" resname="Friends">
+        <source>Friends</source>
+        <target>Friends</target>
+      </trans-unit>
+      <trans-unit id="34ec78fcc91ffb1e54cd85e4a0924332" resname="add">
+        <source>add</source>
+        <target>add</target>
+      </trans-unit>
+      <trans-unit id="4ae5759ed67f66ef0b71ce49f1655464" resname="new operation">
+        <source>new operation</source>
+        <target>new operation</target>
+      </trans-unit>
+      <trans-unit id="6a47a5ea4d595b3194b7216a3b7b2c37" resname="clear debts">
+        <source>clear debts</source>
+        <target>clear debts</target>
+      </trans-unit>
+      <trans-unit id="55fbdc7b9ce46e92ad66f149a5359b48" resname="paid %amount%.">
+        <source>paid %amount%.</source>
+        <target>paid %amount%.</target>
+      </trans-unit>
+      <trans-unit id="aa2e120f7dda7921e9c6347df26d3f9e" resname="owes %amount%.">
+        <source>owes %amount%.</source>
+        <target>owes %amount%.</target>
+      </trans-unit>
+      <trans-unit id="907f6dbe2f3ae0917899382bc27cb53c" resname="%username% owes you">
+        <source>%username% owes you</source>
+        <target>%username% owes you</target>
+      </trans-unit>
+      <trans-unit id="b7a66496396592f63aac7cefec0afeab" resname="You owe %username%">
+        <source>You owe %username%</source>
+        <target>You owe %username%</target>
+      </trans-unit>
+      <trans-unit id="d4cdb55c80788382391c6438662129b6" resname="-Payment-">
+        <source>-Payment-</source>
+        <target>Payment</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

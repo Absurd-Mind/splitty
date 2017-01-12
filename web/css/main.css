@@ -383,5 +383,9 @@ input[type="submit"]:hover{
 	border-color: #CCCCCC;
 }
 
+.paymentstring {
+	color: #CCCCCC;
+	font-size: 12px;
+}
 
 

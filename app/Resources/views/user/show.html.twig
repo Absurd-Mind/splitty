@@ -3,23 +3,22 @@
 {% block right %}
 {% for code, sum in sums %}
 <p>
-    {% if sum.isZero() %}
-    	Du und {{ otherUser.username|e }} sind<br>quitt.
-    {% elseif sum.isPositive() %}
-    	{{ otherUser.username|e }} schuldet dir<br>{% include 'money.html.twig' with { money : sum } %}.
+    {% if sum.isPositive() %}
+        {% trans with { '%username%': otherUser.username|e } %}%username% owes you{% endtrans %}<br>{% include 'money.html.twig' with { money : sum } %}
     {% else %}
-    	Du schuldest {{ otherUser.username|e }} <br>{% include 'money.html.twig' with { money : sum } %}.
+    	{% trans with { '%username%': otherUser.username|e } %}You owe %username%{% endtrans %}<br>{% include 'money.html.twig' with { money : sum } %}
     {% endif %}
 </p>
+{% else %}
+	{{ 'You and %username% are<br>even.' | trans({ '%username%': otherUser.username|e }) | raw }}
 {% endfor %}
 {% endblock %}
-
 {% block body %}
 <div>
 		<h2 style="width: 145px; display: inline-block;">{{ otherUser.username }}</h2>
     	<div style="width: 400px; display: inline-block; text-align: right;">
-    		<a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}" class="button" style="width: unset; display: inline-block;">neue Ausgabe</a>
-    		<a href="{{ path('addPayment', { 'userId' : otherUser.id }) }}" class="button" style="width: unset; display: inline-block;">Schulden begleichen</a>
+    		<a href="{{ path('addOperation', { 'userId' : otherUser.id }) }}" class="button" style="width: unset; display: inline-block;">{% trans %}new operation{% endtrans %}</a>
+    		<a href="{{ path('addPayment', { 'userId' : otherUser.id }) }}" class="button" style="width: unset; display: inline-block;">{% trans %}clear debts{% endtrans %}</a>
     	</div>
 </div>
 	{% for operation in operations %}
@@ -30,17 +29,24 @@
     			    {{ operation.datetime|date('M') }}
     				<div class="datenumber">{{ operation.datetime|date('d') }}</div>
     			</div>
-	    		<div class="description">{{ operation.description|e }}{% if operation.isPayment() %}-Bezahlung-{% endif %}</div>
+	    		<div class="description">{% if operation.isPayment() %}<span class="paymentstring">{% trans %}-Payment-{% endtrans %}</span>
+	    			{% else %}
+	    				{{ operation.description|e }}
+    			    {% endif %}</div>
 			</div>
     		<div class="cost">{% if not operation.isPayment() %}{{ operation.amount|money }}{% endif %}</div>
-			<div class="you">{% include 'money.html.twig' with { money : attribute(summarySums, operation.id) } %}</div>
+			<div class="you">{% include 'money.html.twig' with { 'money' : attribute(summarySums, operation.id) } %}</div>
 		</div>
 		<div class="details">
     		{% for split in operation.splits %}
     		<div>
     			<div class="user" title="{{ split.user }}">{{ split.user }}</div>
-    			<div class="paid">{% if not split.paid.isZero() %}hat {{ split.paid|money }} bezahlt.{% endif %}</div>
-    			<div class="debt">{% if not split.debt.isZero() %}schuldet {{ split.debt|money }}.{% endif %}</div>
+    			<div class="paid">{% if not split.paid.isZero() %}
+    				{% trans with {'%amount%' : split.paid|money } %}paid %amount%.{% endtrans %}
+    			{% endif %}</div>
+    			<div class="debt">{% if not split.debt.isZero() %}
+    			    {% trans with {'%amount%' : split.debt|money } %}owes %amount%.{% endtrans %}
+    			{% endif %}</div>
     		</div>
     		{% endfor %}
     	</div>
